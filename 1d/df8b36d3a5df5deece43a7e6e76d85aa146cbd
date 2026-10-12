@@ -1,0 +1,21 @@
+src/layouts/Base.astro
+  s_4accea58834332::t_8a86b1e462ee64 56
+src/styles/global.css
+  s_4accea58834332::t_28d5a8ae7c6e3e 70-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1ddf8b36d3a5df5deece43a7e6e76d85aa146cbd",
+  "prompts": {},
+  "sessions": {
+    "s_4accea58834332": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a3fef63-bb66-4783-a27e-1d9b0d4ab3c1",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Simon Aunér <simonauner@gmail.com>"
+    }
+  }
+}
