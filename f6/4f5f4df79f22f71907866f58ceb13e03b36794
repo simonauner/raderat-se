@@ -1,0 +1,59 @@
+.gitignore
+  s_4accea58834332::t_62960cfa2a8e34 1-6
+.nvmrc
+  s_4accea58834332::t_1e6415118a1e78 1
+README.md
+  s_4accea58834332::t_4036be2ac2163d 1-62
+astro.config.mjs
+  s_4accea58834332::t_ad58308dc20538 1-24
+package-lock.json
+  s_4accea58834332::t_ee30c93949ec12 1-4662
+public/favicon.svg
+  s_6449d1820b47fa::t_c3675bb68fb427 1-5
+src/data/config.ts
+  s_6449d1820b47fa::t_2d70c0eb0bd26c 1-8
+src/data/sites.json
+  s_4accea58834332::t_d6ca8004734802 1-202
+src/pages/index.astro
+  s_4accea58834332::t_2c7049a911e8f8 1-106
+src/pages/om.astro
+  s_4accea58834332::t_ed7b4ab6b7fdfb 1-47
+src/pages/ta-bort-mig.astro
+  s_4accea58834332::t_19b0eb9da40c45 1-392
+src/styles/global.css
+  s_4accea58834332::t_c4b3118cc6390b 1-166
+tsconfig.json
+  s_6449d1820b47fa::t_27edcff5a9c3f4 1-5
+netlify.toml
+  s_4accea58834332::t_17765940c86c5d 1-17
+package.json
+  s_4accea58834332::t_b89d87d5077584 1-23
+src/layouts/Base.astro
+  s_4accea58834332::t_99b0ece01f4858 1-59
+vercel.json
+  s_4accea58834332::t_4e100884c59653 1-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f64f5f4df79f22f71907866f58ceb13e03b36794",
+  "prompts": {},
+  "sessions": {
+    "s_4accea58834332": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a3fef63-bb66-4783-a27e-1d9b0d4ab3c1",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Simon Aunér <simonauner@gmail.com>"
+    },
+    "s_6449d1820b47fa": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d0a0d8a2-36a4-4a4b-95f9-dc8bd8aba5a8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Simon Aunér <simonauner@gmail.com>"
+    }
+  }
+}
