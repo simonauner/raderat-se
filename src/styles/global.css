@@ -67,6 +67,8 @@ p { margin: .6em 0; }
 
 footer.site { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--muted); font-size: .9rem; }
 footer.site p { margin: .3em 0; }
+footer.site .credit { margin-top: 1.2em; font-size: .8rem; }
+footer.site .credit a { color: inherit; }
 
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
