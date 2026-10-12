@@ -23,11 +23,19 @@ Kräver Node 22.12+ (Astro 7).
 
 ## Deploy
 
-Ren statisk sajt (`dist/`). Konfiguration finns för både Vercel (`vercel.json`) och Netlify (`netlify.toml`). Importera repot hos någon av dem, så plockas build-kommando, output-katalog och headers upp automatiskt. Ta bort filen för den värd du inte använder. Peka sedan DNS för raderat.se dit.
+Sajten ligger på GitHub Pages. `.github/workflows/deploy.yml` kör `npm run check` och `npm run build` på varje PR och deployar `dist/` vid push till `main`. Den egna domänen sätts under Settings → Pages (`public/CNAME` finns med som dokumentation).
 
-- Sidorna byggs som `om.html` och `ta-bort-mig.html` (`build.format: 'file'`). Netlify serverar dem som `/om` utan vidare. På Vercel sköter `cleanUrls` det.
+DNS för raderat.se:
+
+| typ | namn | värde |
+|---|---|---|
+| A | `@` | `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` |
+| AAAA | `@` | `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153` |
+| CNAME | `www` | `simonauner.github.io` |
+
+- Sidorna byggs som `om.html` och `ta-bort-mig.html` (`build.format: 'file'`). Pages serverar dem som `/om`.
 - Astro lägger en strikt CSP som `<meta>` på varje sida (`security.csp` i `astro.config.mjs`) med hashar för alla skript och stilar och `connect-src 'none'`, så sidan kan inte skicka något någonstans. Inline-attributet `style="..."` blockeras därför: lägg stilar i `global.css`.
-- Värdarna sätter dessutom `frame-ancestors 'none'`, `Referrer-Policy: no-referrer` och `Permissions-Policy`, som inte går att sätta via `<meta>`.
+- Pages kan inte sätta egna HTTP-headers. `Referrer-Policy` ligger därför som `<meta>` i `Base.astro`, medan `frame-ancestors` och `Permissions-Policy` saknas (de går bara att sätta som header).
 
 ## Att underhålla: sajtregistret
 
