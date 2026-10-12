@@ -1,0 +1,25 @@
+.github/workflows/deploy.yml
+  s_4accea58834332::t_3b7e06f2921f50 1-46
+README.md
+  s_4accea58834332::t_52c956b263fe2e 26,28-36,38
+public/CNAME
+  s_4accea58834332::t_37831073dfbb6e 1
+src/layouts/Base.astro
+  s_4accea58834332::t_1ef4b9ba06478b 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "79fedd9efde05b316c22485dd4e08fd7117ee050",
+  "prompts": {},
+  "sessions": {
+    "s_4accea58834332": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a3fef63-bb66-4783-a27e-1d9b0d4ab3c1",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Simon Aunér <simonauner@gmail.com>"
+    }
+  }
+}
