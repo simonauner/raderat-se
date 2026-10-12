@@ -1,0 +1,59 @@
+---
+import '../styles/global.css';
+import { config } from '../data/config';
+
+interface Props {
+  title: string;
+  description?: string;
+  path?: string;
+}
+
+const { title, description = 'Skriv det. Bränn det. Glöm det. Och radera dig själv från datamäklarna på riktigt.', path = '/' } = Astro.props;
+const canonical = new URL(path, Astro.site).href;
+const fullTitle = path === '/' ? title : `${title} · ${config.siteName}`;
+---
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#14110f" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="sv_SE" />
+    <meta property="og:image" content={new URL('/og.png', Astro.site).href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="raderat.se – Skriv det. Bränn det. Glöm det." />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <header class="site">
+      <div class="wrap">
+        <a class="brand" href="/">radera<span>t</span>.se</a>
+        <nav aria-label="Huvudmeny">
+          <a href="/" aria-current={path === '/' ? 'page' : undefined}>Bränn</a>
+          <a href="/ta-bort-mig" aria-current={path === '/ta-bort-mig' ? 'page' : undefined}>Ta bort mig</a>
+          <a href="/om" aria-current={path === '/om' ? 'page' : undefined}>Om</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="wrap">
+        <slot />
+      </div>
+    </main>
+    <footer class="site">
+      <div class="wrap">
+        <p>Ingen inloggning, inga cookies, ingen spårning. Det du skriver här lämnar aldrig din webbläsare.</p>
+        <p>Informationen är allmän vägledning och inte juridisk rådgivning. Sajternas rutiner ändras, så kontrollera alltid på respektive sajt.</p>
+      </div>
+    </footer>
+  </body>
+</html>

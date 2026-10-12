@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+import { config } from '../data/config';
+
+const verified = new Date(config.registryVerified).toLocaleDateString('sv-SE', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<Base title="Om raderat.se" description="Vad utgivningsbevis betyder, vad sajten gör och inte gör, och var uppgifterna kommer ifrån." path="/om">
+  <section class="prose">
+    <h1>Om raderat.se</h1>
+    <p class="lead">Ett litet projekt med två sidor: en lekfull där du bränner det du vill glömma, och en seriös där du tar bort dig själv från datamäklarna.</p>
+
+    <h2>Varför kan jag inte bara kräva radering?</h2>
+    <p>Många sajter som publicerar personuppgifter har ett <strong>utgivningsbevis</strong>. Då skyddas de av yttrandefrihetsgrundlagen, och dataskyddsförordningens rätt till radering gäller inte fullt ut. Det betyder att sajterna normalt inte är skyldiga att ta bort dig, även om flera gör det frivilligt, ofta via BankID.</p>
+    <p>Därför ser du på varje sajt en realistisk bedömning i stället för ett löfte. Vissa döljer dig bara i den öppna sökningen eller bara en tid, och då behöver du göra om det.</p>
+    <p>Integritetsskyddsmyndigheten (IMY) har på sin sida en vägledning om utgivningsbevis. Där framgår också att du kan anmäla en tjänst om din vilja inte respekteras.</p>
+
+    <h2>Vad sajten gör</h2>
+    <ul>
+      <li>Samlar de vanligaste sajterna och direktlänkar till respektive borttagningssida.</li>
+      <li>Skapar brevtexter i din webbläsare åt dig.</li>
+      <li>Låter dig bocka av vad du har gjort. Statusen ligger i din webbläsares lokala lagring på din egen enhet.</li>
+    </ul>
+
+    <h2>Vad sajten inte gör</h2>
+    <ul>
+      <li>Den skickar inget åt dig och loggar inte in någonstans för din räkning.</li>
+      <li>Den frågar aldrig efter ditt personnummer. Breven har en tydlig markering som du fyller i själv i ditt mejlprogram eller formulär.</li>
+      <li>Den har inga konton, inga cookies och ingen spårning, och sparar inget på en server.</li>
+      <li>Den ger inte juridisk rådgivning.</li>
+    </ul>
+
+    <h2>Var uppgifterna kommer ifrån</h2>
+    <p>Registret bygger på sajternas egna borttagningssidor och på guider från bland andra DFRI (Föreningen för Digitala Fri- och Rättigheter), Polisförbundet och Näthatshjälpen, samt vägledning från IMY. Där källorna är oeniga eller bara en enskild källa finns, står det på kortet. Senast genomgånget: {verified}.</p>
+    <ul>
+      <li><a href="https://www.dfri.se/sv/engagera-dig/hur-tar-jag-bort/" target="_blank" rel="noopener noreferrer">DFRI: Ta bort dina personliga uppgifter på nätet</a></li>
+      <li><a href="https://www.imy.se/privatperson/dataskydd/vi-guidar-dig/utgivningsbevis/" target="_blank" rel="noopener noreferrer">IMY: Utgivningsbevis</a></li>
+      <li><a href="https://www.polisforbundet.se/arbetsmiljo-rattshjalp/hot-och-vald-mot-poliser/minska-din-synlighet-pa-internet" target="_blank" rel="noopener noreferrer">Polisförbundet: Minska din synlighet på internet</a></li>
+    </ul>
+
+    <h2>Hittar du fel?</h2>
+    <p>Sajterna ändrar sina rutiner ofta, och en länk eller metod kan ha slutat fungera.
+      {config.contactEmail
+        ? <> Hör gärna av dig till <a href={`mailto:${config.contactEmail}`}>{config.contactEmail}</a>.</>
+        : <> Kontaktuppgift kommer.</>}
+    </p>
+  </section>
+</Base>

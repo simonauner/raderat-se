@@ -1,0 +1,202 @@
+[
+  {
+    "id": "hitta",
+    "name": "Hitta.se",
+    "kind": "sok",
+    "appliesTo": "alla",
+    "method": "bankid",
+    "actionUrl": "https://www.hitta.se/kontakta-oss/ta-bort-kontaktsida",
+    "actionLabel": "Ta bort mig på Hitta.se",
+    "verification": "Mobilt BankID",
+    "expectation": "good",
+    "gdprApplies": false,
+    "summary": "Sök upp dig själv och ta bort din kontaktsida.",
+    "steps": [
+      "Öppna borttagningssidan och sök fram dig själv.",
+      "Välj Ta bort och identifiera dig med mobilt BankID.",
+      "Gör även telefonnumret hemligt hos din teleoperatör, annars kan det publiceras igen."
+    ],
+    "caveats": [
+      "Källorna är oeniga om hur länge borttagningen gäller. Kontrollera sajten igen efter några månader."
+    ]
+  },
+  {
+    "id": "merinfo",
+    "name": "Merinfo.se",
+    "kind": "sok",
+    "appliesTo": "alla",
+    "method": "bankid",
+    "actionUrl": "https://www.merinfo.se/ta-bort-mina-uppgifter",
+    "actionLabel": "Ta bort mig på Merinfo.se",
+    "verification": "Mobilt BankID",
+    "expectation": "good",
+    "gdprApplies": false,
+    "summary": "Begär borttagning via inloggning med BankID.",
+    "steps": [
+      "Öppna borttagningssidan.",
+      "Identifiera dig med mobilt BankID och bekräfta att du vill bli borttagen."
+    ],
+    "caveats": [
+      "Företag du äger eller är kopplad till finns kvar och är fortfarande sökbara.",
+      "Har du ett användarkonto på Merinfo tas det inte bort av detta."
+    ]
+  },
+  {
+    "id": "eniro",
+    "name": "Eniro.se",
+    "kind": "sok",
+    "appliesTo": "alla",
+    "method": "bankid",
+    "actionUrl": "https://uppdatera.eniro.se/person",
+    "actionLabel": "Ta bort mig på Eniro",
+    "verification": "Mobilt BankID",
+    "expectation": "good",
+    "gdprApplies": false,
+    "summary": "Dölj eller radera dina uppgifter via Eniros uppdateringssida.",
+    "steps": [
+      "Öppna uppdateringssidan och identifiera dig med mobilt BankID.",
+      "Välj att ta bort dina uppgifter."
+    ],
+    "caveats": [
+      "Telefonnummer kan återkomma om numret fortfarande är sökbart hos teleoperatören."
+    ]
+  },
+  {
+    "id": "ratsit",
+    "name": "Ratsit.se",
+    "kind": "sok",
+    "appliesTo": "alla",
+    "method": "bankid",
+    "actionUrl": "https://www.ratsit.se/tabort",
+    "actionLabel": "Ta bort mig på Ratsit",
+    "verification": "BankID",
+    "expectation": "good",
+    "gdprApplies": false,
+    "summary": "Ta bort dig med BankID. Ratsit anger att det kan ta upp till 24 timmar.",
+    "steps": [
+      "Öppna borttagningssidan och identifiera dig med BankID.",
+      "Bekräfta att du vill bli borttagen."
+    ],
+    "caveats": [
+      "Tidigare har Ratsit bara dolt uppgifter för utloggade besökare i cirka 12 månader. Sidan lovar nu borttagning, men kontrollera igen efter några månader."
+    ]
+  },
+  {
+    "id": "mrkoll",
+    "name": "MrKoll.se",
+    "kind": "sok",
+    "appliesTo": "alla",
+    "method": "form",
+    "actionUrl": "https://mrkoll.se/om/kundservice-kundkontakt/",
+    "actionLabel": "Öppna MrKolls kundtjänst",
+    "verification": "Webbformulär (BankID kan dölja telefon och adress tillfälligt)",
+    "expectation": "uncertain",
+    "gdprApplies": false,
+    "summary": "Historiskt svårast. Skicka en tydlig begäran om full borttagning.",
+    "steps": [
+      "Dölj först telefonnummer och adress via MrKolls egen BankID-funktion om den finns.",
+      "Skicka sedan begäran om att hela personsidan tas bort via kundtjänstens formulär. Använd brevet nedan."
+    ],
+    "caveats": [
+      "Enligt en nyhetskälla har MrKoll nyligen ändrat policy så att full borttagning ska gå att begära. Det är ännu bara en enskild källa, så räkna inte med det förrän du fått bekräftelse.",
+      "BankID-funktionen har tidigare bara dolt uppgifter tillfälligt."
+    ]
+  },
+  {
+    "id": "upplysning",
+    "name": "Upplysning.se",
+    "kind": "sok",
+    "appliesTo": "alla",
+    "method": "form",
+    "actionUrl": "https://www.upplysning.se/kontakta-oss",
+    "actionLabel": "Öppna kontaktformuläret",
+    "verification": "Webbformulär",
+    "expectation": "uncertain",
+    "gdprApplies": false,
+    "summary": "Skicka begäran via kontaktformuläret.",
+    "steps": [
+      "Öppna kontaktformuläret och välj ärendet GDPR.",
+      "Klistra in brevet nedan och fyll i ditt personnummer själv i formuläret."
+    ],
+    "caveats": []
+  },
+  {
+    "id": "birthday",
+    "name": "Birthday.se",
+    "kind": "sok",
+    "appliesTo": "alla",
+    "method": "email",
+    "email": "info@birthday.se",
+    "actionLabel": "Skicka begäran till Birthday.se",
+    "verification": "E-post",
+    "expectation": "uncertain",
+    "gdprApplies": false,
+    "summary": "Begäran skickas via e-post.",
+    "steps": [
+      "Skapa brevet nedan och skicka det från din e-post.",
+      "Fyll i ditt personnummer själv i mejlprogrammet innan du skickar."
+    ],
+    "caveats": [
+      "Uppgifter kan döljas bara delvis. Följ upp om du inte får svar."
+    ]
+  },
+  {
+    "id": "biluppgifter",
+    "name": "Biluppgifter.se",
+    "kind": "fordon",
+    "appliesTo": "alla",
+    "method": "email",
+    "email": "info@biluppgifter.se",
+    "actionLabel": "Skicka begäran till Biluppgifter.se",
+    "verification": "E-post",
+    "expectation": "hard",
+    "gdprApplies": false,
+    "summary": "Visar fordonsägare. Begäran görs via e-post.",
+    "steps": [
+      "Skapa brevet nedan och skicka det från din e-post.",
+      "Fyll i ditt personnummer själv i mejlprogrammet innan du skickar."
+    ],
+    "caveats": [
+      "Läsare har rapporterat att man får ett autosvar som hänvisar till undantaget i GDPR."
+    ]
+  },
+  {
+    "id": "krimfup",
+    "name": "Krimfup.se",
+    "kind": "dom",
+    "appliesTo": "domda",
+    "method": "email",
+    "email": "support@krimfup.se",
+    "actionLabel": "Skicka begäran till Krimfup",
+    "verification": "E-post",
+    "expectation": "uncertain",
+    "gdprApplies": false,
+    "summary": "Bara relevant om du förekommer med en dom.",
+    "steps": [
+      "Skapa brevet nedan och skicka det från din e-post.",
+      "Fyll i ditt personnummer själv i mejlprogrammet innan du skickar."
+    ],
+    "caveats": []
+  },
+  {
+    "id": "lexbase",
+    "name": "Lexbase.se",
+    "kind": "dom",
+    "appliesTo": "domda",
+    "method": "form",
+    "actionUrl": "https://www.lexbase.se/kontakta-oss",
+    "actionLabel": "Öppna Lexbase kontaktformulär",
+    "verification": "Webbformulär",
+    "expectation": "hard",
+    "gdprApplies": false,
+    "summary": "Bara relevant om du förekommer med en dom.",
+    "steps": [
+      "Öppna kontaktformuläret.",
+      "Klistra in brevet nedan och fyll i ditt personnummer själv i formuläret."
+    ],
+    "caveats": [
+      "Lexbase publicerar domar som nyhetsartiklar med utgivningsbevis. Artiklar om mindre mål tas enligt Lexbase ibland bort efter 5 år.",
+      "Lexbase uppger att du kan kontakta redaktionen om en artikel innehåller felaktiga uppgifter eller om det saknas allmänintresse för fortsatt publicering."
+    ]
+  }
+]

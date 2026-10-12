@@ -1,0 +1,392 @@
+---
+import Base from '../layouts/Base.astro';
+import rawSites from '../data/sites.json';
+import { config } from '../data/config';
+
+interface Site {
+  id: string;
+  name: string;
+  kind: string;
+  appliesTo: 'alla' | 'domda';
+  method: 'bankid' | 'form' | 'email';
+  actionUrl?: string;
+  actionLabel?: string;
+  email?: string;
+  verification: string;
+  expectation: 'good' | 'partial' | 'uncertain' | 'hard';
+  gdprApplies: boolean;
+  summary: string;
+  steps: string[];
+  caveats: string[];
+}
+const sites = rawSites as Site[];
+
+const main = sites.filter((s) => s.appliesTo === 'alla');
+const convicted = sites.filter((s) => s.appliesTo === 'domda');
+
+const expectationLabel: Record<string, string> = {
+  good: 'Brukar gå bra',
+  partial: 'Delvis',
+  uncertain: 'Osäkert',
+  hard: 'Svårt',
+};
+const methodLabel: Record<string, string> = {
+  bankid: 'BankID',
+  form: 'Formulär',
+  email: 'E-post',
+};
+
+// Skickas till klienten. "<" escapas så att JSON:en aldrig kan avsluta script-taggen.
+const clientData = JSON.stringify(sites).replace(/</g, '\\u003c');
+const verified = new Date(config.registryVerified).toLocaleDateString('sv-SE', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<Base
+  title="Ta bort mig från datamäklarna"
+  description="Checklista och färdiga brev för att dölja eller ta bort dina uppgifter från Hitta, Ratsit, Merinfo, Eniro, MrKoll med flera."
+  path="/ta-bort-mig"
+>
+  <section>
+    <h1>Dags att bli glömd.</h1>
+    <p class="lead">Här är sajterna som oftast visar din adress, ditt telefonnummer och din ålder, med exakt vad du ska göra på var och en. Bocka av efter hand. Din status sparas bara i den här webbläsaren.</p>
+
+    <div class="notice">
+      <strong>Ärlig förväntan:</strong> de flesta av sajterna har <em>utgivningsbevis</em>, vilket gör att GDPR:s rätt till radering inte gäller fullt ut. De är alltså inte skyldiga att ta bort dig, men flera gör det ändå, framför allt via BankID. Vissa döljer dig bara tillfälligt eller bara för utloggade besökare. Därför ser du en bedömning på varje sajt. <a href="/om">Läs mer</a>.
+    </div>
+
+    <div class="progress" aria-live="polite">
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax={main.length} aria-valuenow="0" id="bar">
+        <div class="fill" id="fill"></div>
+      </div>
+      <div class="label" id="progress-label">0 av {main.length} hanterade</div>
+    </div>
+
+    <noscript>
+      <div class="notice">Brevgenerator och statusspårning kräver JavaScript. Länkarna till sajterna fungerar ändå.</div>
+    </noscript>
+
+    <h2>Söktjänster och register</h2>
+    {main.map((s) => (
+      <article class="site-card" data-site={s.id} data-status="todo">
+        <div class="card-head">
+          <h3>{s.name}</h3>
+          <div class="badges">
+            <span class={`badge ${s.expectation}`}>{expectationLabel[s.expectation]}</span>
+            <span class="badge">{methodLabel[s.method]}</span>
+          </div>
+        </div>
+        <p class="summary">{s.summary}</p>
+        <ol>
+          {s.steps.map((step) => <li>{step}</li>)}
+        </ol>
+        {s.caveats.length > 0 && (
+          <ul class="caveats">
+            {s.caveats.map((c) => <li>{c}</li>)}
+          </ul>
+        )}
+        <div class="actions">
+          {s.method !== 'email' && s.actionUrl && (
+            <a class="btn" href={s.actionUrl} target="_blank" rel="noopener noreferrer">{s.actionLabel} ↗</a>
+          )}
+          {s.method !== 'bankid' && (
+            <button class={s.method === 'email' ? 'btn' : 'btn ghost'} type="button" data-letter-toggle aria-expanded="false">Skapa brev</button>
+          )}
+        </div>
+        {s.method !== 'bankid' && (
+          <div class="letter" data-letter hidden>
+            <label for={`name-${s.id}`}>Ditt namn (används bara här i webbläsaren och sparas inte)</label>
+            <input type="text" id={`name-${s.id}`} data-name autocomplete="name" placeholder="Förnamn Efternamn" />
+            <label for={`letter-${s.id}`}>Brev</label>
+            <textarea id={`letter-${s.id}`} data-output readonly></textarea>
+            <p class="hint">Skriv <strong>inte</strong> in ditt personnummer här. Brevet innehåller en markering som du fyller i själv i ditt mejlprogram eller formulär.</p>
+            <div class="actions">
+              {s.method === 'email' && s.email && (
+                <a class="btn small" data-mailto href="#" data-to={s.email}>Öppna i mejlprogram</a>
+              )}
+              <button class="btn small ghost" type="button" data-copy>Kopiera brev</button>
+              {s.method === 'email' && s.email && <span class="privacy-note">Till: {s.email}</span>}
+            </div>
+          </div>
+        )}
+        <div class="status-row">
+          <label for={`status-${s.id}`}>Status:</label>
+          <select id={`status-${s.id}`} data-status-select>
+            <option value="todo">Inte gjort</option>
+            <option value="sent">Skickat / gjort</option>
+            <option value="confirmed">Bekräftat av sajten</option>
+            <option value="done">Borttagen</option>
+            <option value="refused">Avslagen</option>
+          </select>
+          <span class="when" data-when></span>
+        </div>
+      </article>
+    ))}
+
+    <details class="group">
+      <summary>Förekommer du med en dom? Visa domsajterna</summary>
+      <p class="privacy-note">Dessa sajter publicerar uppgifter om lagföringar. Det är bara relevant om du förekommer där.</p>
+      {convicted.map((s) => (
+        <article class="site-card" data-site={s.id} data-status="todo">
+          <div class="card-head">
+            <h3>{s.name}</h3>
+            <div class="badges">
+              <span class={`badge ${s.expectation}`}>{expectationLabel[s.expectation]}</span>
+              <span class="badge">{methodLabel[s.method]}</span>
+            </div>
+          </div>
+          <p class="summary">{s.summary}</p>
+          <ol>
+            {s.steps.map((step) => <li>{step}</li>)}
+          </ol>
+          {s.caveats.length > 0 && (
+            <ul class="caveats">
+              {s.caveats.map((c) => <li>{c}</li>)}
+            </ul>
+          )}
+          <div class="actions">
+            {s.method !== 'email' && s.actionUrl && (
+              <a class="btn" href={s.actionUrl} target="_blank" rel="noopener noreferrer">{s.actionLabel} ↗</a>
+            )}
+            <button class={s.method === 'email' ? 'btn' : 'btn ghost'} type="button" data-letter-toggle aria-expanded="false">Skapa brev</button>
+          </div>
+          <div class="letter" data-letter hidden>
+            <label for={`name-${s.id}`}>Ditt namn (används bara här i webbläsaren och sparas inte)</label>
+            <input type="text" id={`name-${s.id}`} data-name autocomplete="name" placeholder="Förnamn Efternamn" />
+            <label for={`letter-${s.id}`}>Brev</label>
+            <textarea id={`letter-${s.id}`} data-output readonly></textarea>
+            <p class="hint">Skriv <strong>inte</strong> in ditt personnummer här. Fyll i det själv i mejlprogrammet eller formuläret.</p>
+            <div class="actions">
+              {s.method === 'email' && s.email && (
+                <a class="btn small" data-mailto href="#" data-to={s.email}>Öppna i mejlprogram</a>
+              )}
+              <button class="btn small ghost" type="button" data-copy>Kopiera brev</button>
+              {s.method === 'email' && s.email && <span class="privacy-note">Till: {s.email}</span>}
+            </div>
+          </div>
+          <div class="status-row">
+            <label for={`status-${s.id}`}>Status:</label>
+            <select id={`status-${s.id}`} data-status-select>
+              <option value="todo">Inte gjort</option>
+              <option value="sent">Skickat / gjort</option>
+              <option value="confirmed">Bekräftat av sajten</option>
+              <option value="done">Borttagen</option>
+              <option value="refused">Avslagen</option>
+            </select>
+            <span class="when" data-when></span>
+          </div>
+        </article>
+      ))}
+    </details>
+
+    <h2>Gör det svårare för uppgifterna att komma tillbaka</h2>
+    <ul class="tips">
+      <li><strong>Hemligt telefonnummer:</strong> be din teleoperatör göra numret hemligt. Annars kan det publiceras igen på sajterna.</li>
+      <li><strong>Google:</strong> när en sida är borttagen kan du be Google ta bort kvarvarande träffar med <a href="https://reportcontent.google.com/forms/rtbf" target="_blank" rel="noopener noreferrer">Googles formulär för borttagning</a>.</li>
+      <li><strong>Adresslåset:</strong> <a href="https://www.adressandring.se/vara-tjanster/adresslaset" target="_blank" rel="noopener noreferrer">spärra din adress mot obehöriga adressändringar och eftersändning</a>.</li>
+      <li><strong>Skatteverket:</strong> <a href="https://www.skatteverket.se/privat/folkbokforing/flyttanmalan/sparraobehorigadressandring.4.361dc8c15312eff6fd2ca7c.html" target="_blank" rel="noopener noreferrer">hindra andra från att ändra din folkbokföringsadress</a>. Är du utsatt för hot kan du dessutom ansöka om skyddade personuppgifter hos Skatteverket.</li>
+      <li><strong>Respekteras inte din begäran?</strong> Du kan anmäla till <a href="https://www.imy.se/privatperson/dataskydd/vi-guidar-dig/utgivningsbevis/" target="_blank" rel="noopener noreferrer">Integritetsskyddsmyndigheten (IMY)</a>, som kan granska även sajter med utgivningsbevis.</li>
+    </ul>
+
+    <p class="reset"><button type="button" id="reset">Rensa min checklista i den här webbläsaren</button></p>
+    <p class="privacy-note">Registret senast genomgånget {verified}. Hittar du något som inte stämmer längre? Sajternas rutiner ändras ofta.</p>
+  </section>
+
+  <script type="application/json" id="sites-data" set:html={clientData}></script>
+
+  <script>
+    type Site = {
+      id: string;
+      name: string;
+      method: 'bankid' | 'form' | 'email';
+      email?: string;
+      gdprApplies: boolean;
+    };
+    type Entry = { status: string; at?: string };
+    type State = Record<string, Entry>;
+
+    const sites: Site[] = JSON.parse(document.getElementById('sites-data')?.textContent || '[]');
+    const byId = new Map(sites.map((s) => [s.id, s]));
+    const KEY = 'raderat:status:v1';
+    const MAIN_IDS = Array.from(document.querySelectorAll<HTMLElement>('section > .site-card')).map((el) => el.dataset.site as string);
+
+    function load(): State {
+      try {
+        const raw = localStorage.getItem(KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return parsed && typeof parsed === 'object' ? parsed : {};
+      } catch {
+        return {};
+      }
+    }
+    function save(state: State) {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(state));
+      } catch {
+        /* lagring kan vara blockerad – sajten fungerar ändå */
+      }
+    }
+
+    let state = load();
+
+    function buildLetter(site: Site, rawName: string): { subject: string; body: string } {
+      const name = rawName.trim() || '[ditt namn]';
+      if (site.gdprApplies) {
+        return {
+          subject: 'Begäran om radering av personuppgifter enligt artikel 17 GDPR',
+          body: [
+            'Hej!',
+            '',
+            `Jag utövar härmed min rätt till radering enligt artikel 17 i dataskyddsförordningen (GDPR) gentemot ${site.name}.`,
+            '',
+            `Namn: ${name}`,
+            'Personnummer: [fyll i ditt personnummer här]',
+            '',
+            'Jag begär att alla personuppgifter som kan kopplas till mig raderas från era databaser och webbplatser, så att ingen kan se information om mig i er tjänst. Det gäller även uppgifter ni håller internt och som inte publiceras.',
+            '',
+            'Jag förväntar mig svar utan onödigt dröjsmål och senast inom en månad (artikel 12.3).',
+            '',
+            'Vänliga hälsningar,',
+            name,
+          ].join('\n'),
+        };
+      }
+      return {
+        subject: 'Begäran om borttagning av mina uppgifter',
+        body: [
+          'Hej!',
+          '',
+          `Jag ber er ta bort alla uppgifter om mig från ${site.name} och se till att min sida inte längre publiceras eller går att söka fram.`,
+          '',
+          `Namn: ${name}`,
+          'Personnummer: [fyll i ditt personnummer här]',
+          '',
+          'Begäran gäller alla uppgifter som kan kopplas till mitt namn och personnummer, till exempel adress, telefonnummer, fordon, företagsengagemang och eventuella domar. Radera gärna även de uppgifter ni håller internt, så långt det är möjligt.',
+          '',
+          'Jag är medveten om att er tjänst har utgivningsbevis och att ni därför inte är skyldiga att följa min begäran. Jag ber er ändå att göra det. Om min begäran inte respekteras överväger jag att anmäla det till Integritetsskyddsmyndigheten (IMY).',
+          '',
+          'Jag vill ha en bekräftelse när uppgifterna är borttagna.',
+          '',
+          'Vänliga hälsningar,',
+          name,
+        ].join('\n'),
+      };
+    }
+
+    function fmtDate(iso?: string): string {
+      if (!iso) return '';
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return '';
+      return `Uppdaterad ${d.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' })}`;
+    }
+
+    function render() {
+      document.querySelectorAll<HTMLElement>('.site-card').forEach((card) => {
+        const id = card.dataset.site as string;
+        const entry = state[id];
+        const status = entry?.status || 'todo';
+        card.dataset.status = status;
+        const select = card.querySelector<HTMLSelectElement>('[data-status-select]');
+        if (select) select.value = status;
+        const when = card.querySelector<HTMLElement>('[data-when]');
+        if (when) when.textContent = status === 'todo' ? '' : fmtDate(entry?.at);
+      });
+
+      const handled = MAIN_IDS.filter((id) => (state[id]?.status || 'todo') !== 'todo').length;
+      const removed = MAIN_IDS.filter((id) => ['confirmed', 'done'].includes(state[id]?.status || '')).length;
+      const total = MAIN_IDS.length;
+      const fill = document.getElementById('fill');
+      const bar = document.getElementById('bar');
+      const label = document.getElementById('progress-label');
+      if (fill) fill.style.width = total ? `${Math.round((handled / total) * 100)}%` : '0%';
+      if (bar) bar.setAttribute('aria-valuenow', String(handled));
+      if (label) {
+        label.textContent = `${handled} av ${total} hanterade` + (removed ? ` · ${removed} bekräftat borttagna` : '');
+      }
+    }
+
+    function refreshLetter(card: HTMLElement) {
+      const site = byId.get(card.dataset.site as string);
+      if (!site) return;
+      const name = card.querySelector<HTMLInputElement>('[data-name]')?.value || '';
+      const out = card.querySelector<HTMLTextAreaElement>('[data-output]');
+      const { subject, body } = buildLetter(site, name);
+      if (out) out.value = `Ämne: ${subject}\n\n${body}`;
+      const mailto = card.querySelector<HTMLAnchorElement>('[data-mailto]');
+      if (mailto && site.email) {
+        mailto.href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      }
+    }
+
+    async function copyText(text: string): Promise<boolean> {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.append(ta);
+        ta.select();
+        let ok = false;
+        try {
+          ok = document.execCommand('copy');
+        } catch {
+          ok = false;
+        }
+        ta.remove();
+        return ok;
+      }
+    }
+
+    document.querySelectorAll<HTMLElement>('.site-card').forEach((card) => {
+      const toggle = card.querySelector<HTMLButtonElement>('[data-letter-toggle]');
+      const panel = card.querySelector<HTMLElement>('[data-letter]');
+      toggle?.addEventListener('click', () => {
+        if (!panel) return;
+        const open = panel.hidden;
+        panel.hidden = !open;
+        toggle.setAttribute('aria-expanded', String(open));
+        if (open) {
+          refreshLetter(card);
+          card.querySelector<HTMLInputElement>('[data-name]')?.focus();
+        }
+      });
+
+      card.querySelector<HTMLInputElement>('[data-name]')?.addEventListener('input', () => refreshLetter(card));
+
+      const copyBtn = card.querySelector<HTMLButtonElement>('[data-copy]');
+      copyBtn?.addEventListener('click', async () => {
+        const text = card.querySelector<HTMLTextAreaElement>('[data-output]')?.value || '';
+        const ok = await copyText(text);
+        const original = copyBtn.textContent;
+        copyBtn.textContent = ok ? 'Kopierat!' : 'Markera och kopiera själv';
+        setTimeout(() => (copyBtn.textContent = original), 1800);
+      });
+
+      card.querySelector<HTMLSelectElement>('[data-status-select]')?.addEventListener('change', (e) => {
+        const value = (e.target as HTMLSelectElement).value;
+        const id = card.dataset.site as string;
+        if (value === 'todo') {
+          delete state[id];
+        } else {
+          state[id] = { status: value, at: new Date().toISOString() };
+        }
+        save(state);
+        render();
+      });
+    });
+
+    document.getElementById('reset')?.addEventListener('click', () => {
+      if (!confirm('Rensa all status i den här webbläsaren?')) return;
+      state = {};
+      try {
+        localStorage.removeItem(KEY);
+      } catch {
+        /* ignorera */
+      }
+      render();
+    });
+
+    render();
+  </script>
+</Base>

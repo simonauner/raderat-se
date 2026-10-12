@@ -1,0 +1,106 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="raderat.se – skriv det, bränn det, glöm det" path="/">
+  <section>
+    <h1>Skriv det.<br />Bränn det.<br />Glöm det.</h1>
+    <p class="lead">Något du vill bli av med? Ett pinsamt sms, en ex-tanke, en ånger. Skriv ner det och se det brinna upp. Ingenting sparas eller skickas någonstans.</p>
+
+    <div class="burner" id="burner">
+      <div class="paper" id="paper">
+        <label for="note" class="sr-only">Det du vill bränna</label>
+        <textarea id="note" maxlength="600" placeholder="Skriv något du vill glömma…" spellcheck="false"></textarea>
+      </div>
+      <div class="burner-actions">
+        <button class="btn" id="burn" type="button">Bränn</button>
+        <span class="privacy-note" id="counter" aria-live="polite">Max 600 tecken</span>
+      </div>
+    </div>
+
+    <div class="cta-card">
+      <h2>Vill du radera dig på riktigt?</h2>
+      <p>Din adress, ditt telefonnummer och din ålder ligger troligen öppet på flera sajter. Vi guidar dig genom att dölja eller ta bort dem, sajt för sajt, med färdiga brev och en checklista.</p>
+      <p><a class="btn" href="/ta-bort-mig">Börja radera mig</a></p>
+    </div>
+  </section>
+
+  <script>
+    const note = document.getElementById('note') as HTMLTextAreaElement | null;
+    const burn = document.getElementById('burn') as HTMLButtonElement | null;
+    const paper = document.getElementById('paper') as HTMLElement | null;
+    const counter = document.getElementById('counter') as HTMLElement | null;
+    const burner = document.getElementById('burner') as HTMLElement | null;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const MAX = 600;
+
+    function updateCounter() {
+      if (!note || !counter) return;
+      const left = MAX - note.value.length;
+      counter.textContent = left < 100 ? `${left} tecken kvar` : `Max ${MAX} tecken`;
+    }
+    note?.addEventListener('input', updateCounter);
+
+    function showGone() {
+      if (!paper || !burner) return;
+      paper.className = 'paper gone';
+      paper.innerHTML = '';
+      const msg = document.createElement('p');
+      msg.className = 'done-msg';
+      msg.textContent = 'Borta. 🔥';
+      const sub = document.createElement('p');
+      sub.className = 'done-sub';
+      sub.textContent = 'Det finns inte längre. Inte hos oss, inte hos någon annan.';
+      paper.append(msg, sub);
+
+      const actions = burner.querySelector('.burner-actions');
+      if (actions) {
+        actions.innerHTML = '';
+        const again = document.createElement('button');
+        again.className = 'btn ghost';
+        again.type = 'button';
+        again.textContent = 'Bränn något mer';
+        again.addEventListener('click', () => location.reload());
+        actions.append(again);
+      }
+    }
+
+    burn?.addEventListener('click', () => {
+      if (!note || !paper || !burn) return;
+      const text = note.value.replace(/\s+$/, '');
+      if (!text.trim()) {
+        paper.classList.remove('shake');
+        void paper.offsetWidth;
+        paper.classList.add('shake');
+        note.focus();
+        return;
+      }
+
+      burn.disabled = true;
+      const view = document.createElement('div');
+      view.className = 'burning';
+      view.setAttribute('aria-hidden', 'true');
+
+      const chars = Array.from(text);
+      const spread = Math.min(2600, 600 + chars.length * 12);
+      chars.forEach((ch, i) => {
+        if (ch === '\n') {
+          const br = document.createElement('span');
+          br.className = 'nl';
+          view.append(br);
+          return;
+        }
+        const s = document.createElement('span');
+        s.textContent = ch;
+        const delay = reduced ? 0 : (i / chars.length) * spread + Math.random() * 300;
+        s.style.setProperty('--delay', `${delay.toFixed(0)}ms`);
+        s.style.setProperty('--dur', `${(900 + Math.random() * 700).toFixed(0)}ms`);
+        view.append(s);
+      });
+
+      note.replaceWith(view);
+      note.value = '';
+      setTimeout(showGone, (reduced ? 700 : spread + 1500));
+    });
+  </script>
+</Base>
